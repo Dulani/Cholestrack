@@ -6,12 +6,13 @@
 // --- FIREBASE V11 STUBS ---
 // Replace these with actual Firebase SDK imports in a real production environment
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY_HERE",
-    authDomain: "cholestrack-dev.firebaseapp.com",
-    projectId: "cholestrack-dev",
-    storageBucket: "cholestrack-dev.appspot.com",
-    messagingSenderId: "000000000000",
-    appId: "1:000000000000:web:0000000000000000000000"
+    apiKey: "AIzaSyAc-yJS-Bg_9OrPAwxBMCyrWutZlVzinAI",
+    authDomain: "cholestrack.firebaseapp.com",
+    projectId: "cholestrack",
+    storageBucket: "cholestrack.firebasestorage.app",
+    messagingSenderId: "756044654695",
+    appId: "1:756044654695:web:f8220aea7f14729aa20cc2",
+    measurementId: "G-115YVL9SYN"
 };
 
 // Mock Firebase SDK Functions
