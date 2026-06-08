@@ -16,9 +16,11 @@ import HistoryList from './components/HistoryList';
 import AnalyticsCharts from './components/AnalyticsCharts';
 import ProfileSettings from './components/ProfileSettings';
 import GitHubLab from './components/GitHubLab';
+import ImpactCalculator from './components/ImpactCalculator';
+import Citations from './components/Citations';
 
 // Lucide icon imports
-import { Heart, Plus, ShieldAlert, CheckCircle, Flame, User as UserIcon, LogIn, Database, Sparkles, Activity, Dumbbell } from 'lucide-react';
+import { Heart, Plus, ShieldAlert, CheckCircle, Flame, User as UserIcon, LogIn, Database, Sparkles, Activity, Dumbbell, BookOpen } from 'lucide-react';
 
 const DEFAULT_PROFILE: UserProfile = {
   age: 45,
@@ -63,7 +65,7 @@ export default function App() {
   const [showLifestyleModal, setShowLifestyleModal] = useState(false);
   const [editingLog, setEditingLog] = useState<CholesterolLog | null>(null);
   const [connectionVerified, setConnectionVerified] = useState<boolean | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'github'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'github' | 'playground' | 'citations'>('dashboard');
 
   // Authentication observer hook
   useEffect(() => {
@@ -272,7 +274,7 @@ export default function App() {
           
           <button
             onClick={() => setActiveTab('github')}
-            className={`pb-3 text-sm font-bold border-b-2 transition duration-150 flex items-center space-x-2 px-1 ${
+            className={`pb-3 text-sm font-bold border-b-2 transition duration-150 flex items-center space-x-2 mr-6 px-1 ${
               activeTab === 'github'
                 ? 'border-indigo-600 text-indigo-600'
                 : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-200'
@@ -280,6 +282,30 @@ export default function App() {
           >
             <Sparkles className="h-4 w-4 text-indigo-500 animate-pulse" />
             <span>GitHub Scientific Comparison Lab</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('playground')}
+            className={`pb-3 text-sm font-bold border-b-2 transition duration-150 flex items-center space-x-2 mr-6 px-1 ${
+              activeTab === 'playground'
+                ? 'border-indigo-600 text-indigo-600'
+                : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-200'
+            }`}
+          >
+            <Dumbbell className="h-4 w-4 text-emerald-500 animate-pulse" />
+            <span>Playground</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('citations')}
+            className={`pb-3 text-sm font-bold border-b-2 transition duration-150 flex items-center space-x-2 px-1 ${
+              activeTab === 'citations'
+                ? 'border-indigo-600 text-indigo-600'
+                : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-200'
+            }`}
+          >
+            <BookOpen className="h-4 w-4 text-slate-500" />
+            <span>Citations</span>
           </button>
         </div>
 
@@ -360,8 +386,12 @@ export default function App() {
           </section>
 
         </div>
-        ) : (
+        ) : activeTab === 'github' ? (
           <GitHubLab profile={profile} onSaveProfile={handleSaveProfile} />
+        ) : activeTab === 'playground' ? (
+          <ImpactCalculator latestLog={latestLog} />
+        ) : (
+          <Citations />
         )}
       </main>
 
