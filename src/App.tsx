@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc, addDoc, deleteDoc, collection, onSnapshot, query, orderBy, getDocFromServer } from 'firebase/firestore';
 import { auth, db, handleFirestoreError, OperationType, isSandboxProject, productionConfig } from './utils/firebase';
-import { UserProfile, CholesterolLog } from './types';
+import { UserProfile, CholesterolLog, LifestyleLog } from './types';
 import { calculateASCVD } from './utils/ascvd';
 
 // Component imports
@@ -10,13 +10,15 @@ import Header from './components/Header';
 import MetricCards from './components/MetricCards';
 import RiskCard from './components/RiskCard';
 import LogModal from './components/LogModal';
+import LifestyleModal from './components/LifestyleModal';
+import LifestyleCard from './components/LifestyleCard';
 import HistoryList from './components/HistoryList';
 import AnalyticsCharts from './components/AnalyticsCharts';
 import ProfileSettings from './components/ProfileSettings';
 import GitHubLab from './components/GitHubLab';
 
 // Lucide icon imports
-import { Heart, Plus, ShieldAlert, CheckCircle, Flame, User as UserIcon, LogIn, Database, Sparkles, Activity } from 'lucide-react';
+import { Heart, Plus, ShieldAlert, CheckCircle, Flame, User as UserIcon, LogIn, Database, Sparkles, Activity, Dumbbell } from 'lucide-react';
 
 const DEFAULT_PROFILE: UserProfile = {
   age: 45,
@@ -54,9 +56,11 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
   const [logs, setLogs] = useState<CholesterolLog[]>([]);
-  
+  const [lifeLogs, setLifeLogs] = useState<LifestyleLog[]>([]);
+
   // Modals state
   const [showAddLogModal, setShowAddLogModal] = useState(false);
+  const [showLifestyleModal, setShowLifestyleModal] = useState(false);
   const [editingLog, setEditingLog] = useState<CholesterolLog | null>(null);
   const [connectionVerified, setConnectionVerified] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'github'>('dashboard');
@@ -104,7 +108,7 @@ export default function App() {
       console.error("Profile onSnapshot failed, bypassing:", err);
     });
 
-    // 2. Logs subcollection listener (sorted chronologically desc)
+    // 2. Cholesterol logs subcollection listener (sorted chronologically desc)
     const logsRef = collection(db, 'users', user.uid, 'logs');
     const logsQuery = query(logsRef, orderBy('date', 'desc'));
     const unsubLogs = onSnapshot(logsQuery, (snap) => {
@@ -119,9 +123,23 @@ export default function App() {
       setLoading(false);
     });
 
+    // 3. Lifestyle logs subcollection listener
+    const lifeRef = collection(db, 'users', user.uid, 'lifestyle');
+    const lifeQuery = query(lifeRef, orderBy('date', 'desc'));
+    const unsubLife = onSnapshot(lifeQuery, (snap) => {
+      const dbLife: LifestyleLog[] = [];
+      snap.forEach((docSnap) => {
+        dbLife.push({ id: docSnap.id, ...docSnap.data() } as LifestyleLog);
+      });
+      setLifeLogs(dbLife);
+    }, (err) => {
+      console.error('Lifestyle logs fetch error:', err);
+    });
+
     return () => {
       unsubProfile();
       unsubLogs();
+      unsubLife();
     };
   }, [user]);
 
@@ -171,16 +189,29 @@ export default function App() {
 
   const handleDeleteLog = async (logId: string) => {
     if (!user) {
-      // Offline/Sandbox inline log edit
       setLogs(prev => prev.filter(l => l.id !== logId));
       return;
     }
-
     try {
       const logDocRef = doc(db, 'users', user.uid, 'logs', logId);
       await deleteDoc(logDocRef);
     } catch (err) {
       handleFirestoreError(err, OperationType.DELETE, `users/${user.uid}/logs/${logId}`);
+    }
+  };
+
+  const handleSaveLifestyle = async (logData: Omit<LifestyleLog, 'id' | 'createdAt'>) => {
+    const entry = { ...logData, createdAt: new Date().toISOString() };
+    if (!user) {
+      // Sandbox: local only
+      setLifeLogs(prev => [{ ...entry, id: `demo-life-${Date.now()}` }, ...prev]);
+      return;
+    }
+    try {
+      const lifeRef = collection(db, 'users', user.uid, 'lifestyle');
+      await addDoc(lifeRef, entry);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.CREATE, `users/${user.uid}/lifestyle`);
     }
   };
 
@@ -263,16 +294,25 @@ export default function App() {
                 <h2 className="text-lg font-bold text-slate-800 tracking-tight">Current Lipid Chemistry profiles</h2>
                 <p className="text-xs text-slate-400">Validated standard reference models in units of mg/dL</p>
               </div>
-              <button
-                onClick={() => {
-                  setEditingLog(null);
-                  setShowAddLogModal(true);
-                }}
-                className="px-4 py-2 border border-slate-200 hover:border-slate-300 rounded-xl bg-white shadow-xs text-xs font-bold font-sans text-slate-700 flex items-center space-x-1.5 hover:shadow-xs transition duration-200"
-              >
-                <Plus className="h-4 w-4 text-indigo-500" />
-                <span>Log Chemistry Lab</span>
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setShowLifestyleModal(true)}
+                  className="px-4 py-2 border border-slate-200 hover:border-slate-300 rounded-xl bg-white shadow-xs text-xs font-bold font-sans text-slate-700 flex items-center space-x-1.5 hover:shadow-xs transition duration-200"
+                >
+                  <Dumbbell className="h-4 w-4 text-emerald-500" />
+                  <span>Log Activity</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setEditingLog(null);
+                    setShowAddLogModal(true);
+                  }}
+                  className="px-4 py-2 border border-slate-200 hover:border-slate-300 rounded-xl bg-white shadow-xs text-xs font-bold font-sans text-slate-700 flex items-center space-x-1.5 hover:shadow-xs transition duration-200"
+                >
+                  <Plus className="h-4 w-4 text-indigo-500" />
+                  <span>Log Chemistry Lab</span>
+                </button>
+              </div>
             </div>
             
             <MetricCards logs={logs} gender={profile.gender} />
@@ -288,13 +328,18 @@ export default function App() {
             </div>
           </section>
 
-          {/* Section 3: Time Series Trends */}
+          {/* Section 3: Lifestyle summary card */}
+          <section>
+            <LifestyleCard lifeLogs={lifeLogs} />
+          </section>
+
+          {/* Section 4: Time Series Trends */}
           <section className="space-y-3">
             <div className="px-1">
               <h2 className="text-lg font-bold text-slate-800 tracking-tight">Diagnostic Longitudinal Trends</h2>
-              <p className="text-xs text-slate-400">Interactive charts displaying metric fluctuations over a chronological timeline</p>
+              <p className="text-xs text-slate-400">Interactive charts · solid lines: measured · dashed: science-based lifestyle projection</p>
             </div>
-            <AnalyticsCharts logs={logs} />
+            <AnalyticsCharts logs={logs} lifeLogs={lifeLogs} />
           </section>
 
           {/* Section 4: History log database */}
@@ -320,7 +365,7 @@ export default function App() {
         )}
       </main>
 
-      {/* Interactive Logs Modal */}
+      {/* Cholesterol Log Modal */}
       {showAddLogModal && (
         <LogModal
           editingLog={editingLog}
@@ -329,6 +374,14 @@ export default function App() {
             setEditingLog(null);
           }}
           onSave={handleSaveLog}
+        />
+      )}
+
+      {/* Lifestyle Log Modal */}
+      {showLifestyleModal && (
+        <LifestyleModal
+          onClose={() => setShowLifestyleModal(false)}
+          onSave={handleSaveLifestyle}
         />
       )}
     </div>

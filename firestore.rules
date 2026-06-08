@@ -49,6 +49,24 @@ service cloud.firestore {
       );
     }
 
+    function isValidLifestyleLog(data) {
+      return (
+        data.keys().hasAll(['date', 'foodDescription', 'satFat', 'solubleFiber', 'activityType', 'duration', 'mets', 'supplements', 'weight', 'bodyWater', 'activeCalories', 'restingHr']) &&
+        data.date is string &&
+        data.foodDescription is string &&
+        (data.satFat is int || data.satFat is float) && data.satFat >= 0 &&
+        (data.solubleFiber is int || data.solubleFiber is float) && data.solubleFiber >= 0 &&
+        data.activityType in ['cardio', 'strength', 'hiit', 'yoga', 'other'] &&
+        data.duration is int && data.duration > 0 &&
+        (data.mets is int || data.mets is float) && data.mets >= 0 &&
+        data.supplements is list &&
+        (data.weight is int || data.weight is float) && data.weight >= 0 &&
+        (data.bodyWater is int || data.bodyWater is float) && data.bodyWater >= 0 &&
+        data.activeCalories is int && data.activeCalories >= 0 &&
+        data.restingHr is int && data.restingHr >= 0
+      );
+    }
+
     // Collection: User Profiles
     match /users/{userId} {
       allow get: if isOwner(userId);
@@ -61,6 +79,14 @@ service cloud.firestore {
         allow get, list: if isOwner(userId);
         allow create: if isOwner(userId) && isValidId(userId) && isValidId(logId) && isValidCholesterolLog(incoming());
         allow update: if isOwner(userId) && isValidCholesterolLog(incoming());
+        allow delete: if isOwner(userId);
+      }
+
+      // Sub-collection: Lifestyle Logs
+      match /lifestyle/{lifestyleId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(userId) && isValidId(lifestyleId) && isValidLifestyleLog(incoming());
+        allow update: if isOwner(userId) && isValidLifestyleLog(incoming());
         allow delete: if isOwner(userId);
       }
     }
