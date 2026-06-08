@@ -2,7 +2,8 @@ const CACHE_NAME = 'cholestrack-v1';
 const ASSETS = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/icon.png'
 ];
 
 self.addEventListener('install', (e) => {

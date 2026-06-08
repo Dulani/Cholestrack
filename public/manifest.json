@@ -3,7 +3,7 @@
   "name": "CholesTrack Scientific Cholesterol Tracker",
   "icons": [
     {
-      "src": "https://img.icons8.com/isometric/512/heart-with-pulse.png",
+      "src": "/icon.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
