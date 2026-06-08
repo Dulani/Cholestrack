@@ -1,0 +1,6 @@
+{
+  "name": "CholesTrack",
+  "description": "A scientific cholesterol tracking and risk assessment application with clinical insights.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

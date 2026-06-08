@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with clinical cardiovascular risk factor details.",
+      "type": "object",
+      "properties": {
+        "age": { "type": "integer" },
+        "gender": { "type": "string", "enum": ["male", "female"] },
+        "race": { "type": "string", "enum": ["white", "african_american", "other"] },
+        "systolicBp": { "type": "integer" },
+        "treatedForHypertension": { "type": "boolean" },
+        "diabetes": { "type": "boolean" },
+        "smoker": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["gender", "race"]
+    },
+    "CholesterolLog": {
+      "title": "CholesterolLog",
+      "description": "An entry representing a cholesterol lab or home test measurement.",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "format": "date-time" },
+        "totalChol": { "type": "integer" },
+        "hdl": { "type": "integer" },
+        "ldl": { "type": "integer" },
+        "triglycerides": { "type": "integer" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["date", "totalChol", "hdl", "ldl", "triglycerides"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual database entry for user risk profile."
+    },
+    "/users/{userId}/logs/{logId}": {
+      "schema": "CholesterolLog",
+      "description": "Sub-collection containing chronological cholesterol log entries."
+    }
+  }
+}
