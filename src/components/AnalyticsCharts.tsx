@@ -109,7 +109,7 @@ export default function AnalyticsCharts({ logs, lifeLogs }: AnalyticsChartsProps
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       
       {/* Chart 1: Core lipids cholesterol variables */}
-      <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-xs">
+      <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-xs min-w-0">
         <div className="flex justify-between items-center mb-4">
           <div>
             <h3 className="text-sm font-sans font-bold text-slate-900 flex items-center space-x-1.5">
@@ -165,7 +165,7 @@ export default function AnalyticsCharts({ logs, lifeLogs }: AnalyticsChartsProps
       </div>
 
       {/* Chart 2: Serum Triglyceride predictions */}
-      <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-xs">
+      <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-xs min-w-0">
         <div className="flex justify-between items-center mb-4">
           <div>
             <h3 className="text-sm font-sans font-bold text-slate-900 flex items-center space-x-1.5">

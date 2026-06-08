@@ -25,7 +25,7 @@ const getActiveConfig = () => {
     console.error("Failed to read localStorage config override", e);
   }
   // Default to user's productionConfig as requested, fallback to playground applet config
-  return localAppletConfig || productionConfig;
+  return productionConfig || localAppletConfig;
 };
 
 const activeConfig = getActiveConfig();
