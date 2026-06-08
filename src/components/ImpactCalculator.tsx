@@ -15,6 +15,7 @@ export default function ImpactCalculator({ latestLog }: ImpactCalculatorProps) {
 
   // 2. Lifestyle Inputs
   const [satFat, setSatFat] = useState<number>(15); // grams daily, standard baseline ~15.6g
+  const [solubleFiber, setSolubleFiber] = useState<number>(3); // grams daily, standard baseline ~3g
   const [starch, setStarch] = useState<number>(100); // grams daily, standard baseline ~100g
   const [protein, setProtein] = useState<number>(60); // grams daily, standard baseline ~60g
   
@@ -43,6 +44,11 @@ export default function ImpactCalculator({ latestLog }: ImpactCalculatorProps) {
     const satFatDeltaG = satFat - 15;
     const ldlDeltaSatFat = (satFatDeltaG / 2.22) * 2.0;
 
+    // Soluble Fiber: baseline is ~3g. Each gram above baseline reduces LDL.
+    // 5g of daily soluble fiber above baseline (3g) decreases LDL by -2.2 mg/dL over 30 days (Anderson et al., 1990)
+    const fiberDeltaG = solubleFiber - 3;
+    const ldlDeltaFiber = -((fiberDeltaG) / 5) * 2.2;
+
     // Starch & Refined Carbohydrates: baseline ~100g.
     // Each 10g of daily starch above baseline increases TG by 1.5 mg/dL and lowers HDL by 0.1 mg/dL over 30 days.
     const starchDeltaG = starch - 100;
@@ -68,7 +74,7 @@ export default function ImpactCalculator({ latestLog }: ImpactCalculatorProps) {
     const tgDeltaExercise = -(weeklyMetHours * 1.8);
 
     // --- 30-Day Totals ---
-    const ldlChange30d = ldlDeltaSatFat + ldlDeltaExercise;
+    const ldlChange30d = ldlDeltaSatFat + ldlDeltaFiber + ldlDeltaExercise;
     const hdlChange30d = hdlDeltaStarch + hdlDeltaProtein + hdlDeltaExercise;
     const tgChange30d = tgDeltaStarch + tgDeltaProtein + tgDeltaExercise;
 
@@ -114,6 +120,7 @@ export default function ImpactCalculator({ latestLog }: ImpactCalculatorProps) {
     setHdl(latestLog?.hdl || 50);
     setTrig(latestLog?.triglycerides || 150);
     setSatFat(15);
+    setSolubleFiber(3);
     setStarch(100);
     setProtein(60);
     setWorkoutIntensity('medium');
@@ -214,6 +221,23 @@ export default function ImpactCalculator({ latestLog }: ImpactCalculatorProps) {
                 value={satFat}
                 onChange={(e) => setSatFat(parseInt(e.target.value))}
                 className="w-full h-1.5 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-rose-500"
+              />
+            </div>
+
+            {/* Soluble Fiber */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-mono">
+                <span className="text-slate-350">Soluble Fiber</span>
+                <span className="font-bold text-teal-400">{solubleFiber}g <span className="text-[10px] text-slate-500">(Baseline: 3g)</span></span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="30"
+                step="0.5"
+                value={solubleFiber}
+                onChange={(e) => setSolubleFiber(parseFloat(e.target.value))}
+                className="w-full h-1.5 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-teal-500"
               />
             </div>
 
@@ -455,10 +479,26 @@ export default function ImpactCalculator({ latestLog }: ImpactCalculatorProps) {
                 </p>
               </div>
 
+              {/* Soluble Fiber Equation */}
+              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                <span className="block font-bold text-slate-700 uppercase text-[9px] tracking-wider mb-1">
+                  2. Soluble Fiber (Bile Acid Binding / Anderson Equation)
+                </span>
+                <code className="block text-slate-900 font-bold mb-1">
+                  ΔLDL_30d = -((Fiber_g - 3) / 5) * 2.2
+                </code>
+                <code className="block text-indigo-900 font-bold mb-1">
+                  K_L(F_S, F_B) = [K_max * (1 + γ * F_B)] / [1 + β * F_S]
+                </code>
+                <p className="text-[10px] text-slate-400">
+                  Soluble fiber forms a gel binding bile acids. Anderson meta-analysis demonstrates -2.2 mg/dL per 5g soluble fiber above 3g baseline. Dynamic clearance rates ($K_L$) represent clearance upregulation based on daily fiber intake.
+                </p>
+              </div>
+
               {/* Carbohydrates/Starch Equation */}
               <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
                 <span className="block font-bold text-slate-700 uppercase text-[9px] tracking-wider mb-1">
-                  2. Refined Starch & Carbohydrates
+                  3. Refined Starch & Carbohydrates
                 </span>
                 <code className="block text-slate-900 font-bold mb-1">
                   ΔTG_30d = ((Starch_g - 100) / 10) * 1.5
@@ -474,7 +514,7 @@ export default function ImpactCalculator({ latestLog }: ImpactCalculatorProps) {
               {/* Exercise/METs Equation */}
               <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
                 <span className="block font-bold text-slate-700 uppercase text-[9px] tracking-wider mb-1">
-                  3. Exercise Demand (Kodama Meta-Analysis)
+                  4. Exercise Demand (Kodama Meta-Analysis)
                 </span>
                 <code className="block text-slate-900 font-bold mb-1">
                   Weekly_MET_Hours = MET_intensity * Hours * Freq

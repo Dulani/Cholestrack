@@ -1,11 +1,12 @@
 import { classifyLipids } from '../utils/ascvd';
-import { CholesterolLog } from '../types';
+import { CholesterolLog, LifestyleLog } from '../types';
 import { Shield, Info, Activity, TrendingDown, TrendingUp, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface MetricCardsProps {
   logs: CholesterolLog[];
   gender: 'male' | 'female';
+  lifeLogs?: LifestyleLog[];
 }
 
 // Custom relative calculator to scale absolute metric values to visual percentages [0-100]
@@ -123,11 +124,16 @@ function getGaugeConfig(type: 'total' | 'ldl' | 'hdl' | 'trig', value: number, g
   return { percentage, zones, labels };
 }
 
-export default function MetricCards({ logs, gender }: MetricCardsProps) {
+export default function MetricCards({ logs, gender, lifeLogs = [] }: MetricCardsProps) {
   // Sort logs chronologically (date ascending) to accurately determine sequence
   const sortedLogs = [...logs].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   const latestLog = sortedLogs[sortedLogs.length - 1] || null;
   const previousLog = sortedLogs.length >= 2 ? sortedLogs[sortedLogs.length - 2] : null;
+
+  // Today's soluble fiber intake
+  const todayStr = new Date().toDateString();
+  const todayLogs = lifeLogs.filter(l => new Date(l.date).toDateString() === todayStr);
+  const todayFiber = todayLogs.reduce((s, l) => s + (l.solubleFiber || 0), 0);
 
   if (!latestLog) {
     return (
@@ -250,6 +256,15 @@ export default function MetricCards({ logs, gender }: MetricCardsProps) {
                 <p className="text-xs text-slate-500 leading-normal mb-4">
                   {card.description}
                 </p>
+
+                {card.type === 'ldl' && todayFiber < 10 && (
+                  <div className="mb-4 p-2.5 bg-amber-50/70 border border-amber-200/50 rounded-xl flex items-start space-x-2 text-[11px] text-amber-800 leading-normal">
+                    <AlertCircle className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Low soluble fiber detected ({todayFiber.toFixed(1)}g/10g).</strong> Increasing soluble fiber binds intestinal bile acids, accelerating liver LDL clearance.
+                    </span>
+                  </div>
+                )}
 
                 {/* Custom Relative Dot-Bar Visualizer Scale */}
                 <div className="mb-4 pt-1">

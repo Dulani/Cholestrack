@@ -341,7 +341,7 @@ export default function App() {
               </div>
             </div>
             
-            <MetricCards logs={logs} gender={profile.gender} />
+            <MetricCards logs={logs} gender={profile.gender} lifeLogs={lifeLogs} />
           </section>
 
           {/* Section 2: Clinical Model and demographics */}

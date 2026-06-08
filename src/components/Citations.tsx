@@ -265,6 +265,84 @@ export default function Citations() {
           </div>
         </div>
 
+        {/* Section 4 */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-150 shadow-xs space-y-4">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="p-1.5 bg-teal-50 text-teal-500 rounded-lg">
+                <BookOpen className="h-4 w-4" />
+              </span>
+              <h3 className="text-sm font-sans font-extrabold text-slate-800">
+                4. Cholesterol-Lowering Effects of Dietary Soluble Fiber
+              </h3>
+            </div>
+            <span className="text-[10px] bg-teal-50 text-teal-700 border border-teal-100 px-2.5 py-0.5 rounded-full font-mono font-bold">
+              Meta-Analysis
+            </span>
+          </div>
+
+          {/* Citation block */}
+          <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-2">
+            <span className="block text-[9px] font-mono text-slate-400 uppercase font-bold tracking-wider">Citation</span>
+            <p className="text-xs text-slate-700 leading-relaxed italic">
+              Brown, L., Rosner, B., Willett, W. W., & Sacks, F. M. (1999). Cholesterol-lowering effects of dietary fiber: a meta-analysis. <span className="font-semibold">The American Journal of Clinical Nutrition</span>, 69(1), 30–42.
+            </p>
+            <a 
+              href="https://doi.org/10.1093/ajcn/69.1.30" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-1 text-[10px] font-mono font-bold text-indigo-600 hover:text-indigo-700 hover:underline"
+            >
+              <span>doi:10.1093/ajcn/69.1.30</span>
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+
+          {/* Details Metadata */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-sans leading-relaxed">
+            <div className="p-3 bg-slate-50/50 rounded-xl border border-slate-100 space-y-1.5">
+              <span className="font-bold text-slate-800 flex items-center space-x-1.5">
+                <Award className="h-3.5 w-3.5 text-amber-500" />
+                <span>Study Cohort & Robustness</span>
+              </span>
+              <ul className="list-disc list-inside text-slate-500 text-[11px] space-y-1">
+                <li><strong>Study Profile:</strong> Meta-analysis of 67 controlled clinical trials.</li>
+                <li><strong>Citational Reach:</strong> Cited by 1,800+ publications (Landmark baseline).</li>
+                <li><strong>Robustness:</strong> Extremely high. Establishes significant, dose-dependent reductions in total and LDL cholesterol without altering HDL or triglycerides.</li>
+              </ul>
+            </div>
+
+            <div className="p-3 bg-slate-50/50 rounded-xl border border-slate-100 space-y-1.5">
+              <span className="font-bold text-slate-800 flex items-center space-x-1.5">
+                <Layers className="h-3.5 w-3.5 text-indigo-400" />
+                <span>Identified Limitations</span>
+              </span>
+              <p className="text-slate-500 text-[11px] leading-relaxed">
+                Trials measured bulk changes at steady-state plateaus (4-12 weeks); they did not map daily temporal clearance profiles or isolate individual variations in bile acid pool synthesis rates.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 bg-slate-900 text-slate-350 rounded-2xl border border-slate-850 font-mono text-[11px] leading-relaxed">
+            <span className="block font-sans font-bold text-white uppercase text-[10px] tracking-wider mb-2 flex items-center space-x-1.5">
+              <Zap className="h-3.5 w-3.5 text-indigo-400" />
+              <span>Translation Mechanics (Code Integration)</span>
+            </span>
+            <p>
+              In our core simulation and Playground tools, soluble fiber ($F_B$) directly acts as a clearance catalyst:
+            </p>
+            <ul className="list-disc list-inside mt-2 space-y-1.5 text-slate-400">
+              <li>
+                <strong>Bile Acid Binding:</strong> Forms a gel in the intestinal lumen to bind and excrete bile acids, forcing the liver to convert endogenous cholesterol into bile, upregulating fractional clearance.
+              </li>
+              <li>
+                <strong>Compartmental clearance kinetics ($K_L$):</strong> Clearances are parameterized via Anderson equations ($2.2 \text{ mg/dL}$ decrease per $5\text{g}$ soluble fiber above $3\text{g}$ daily) and the dynamic clearance rate model:
+                <code className="block text-indigo-300 mt-1">K_L(F_S, F_B) = [K_max * (1 + 0.015 * F_B)] / [1 + 0.05 * F_S]</code>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
     </motion.div>
   );

@@ -49,7 +49,7 @@ export default function Header({ user, loading }: HeaderProps) {
               <h1 className="text-xl font-sans font-bold tracking-tight text-gray-900 flex items-center">
                 CholesTrack
                 <span className="ml-2 text-xs font-mono font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
-                  v0.5
+                  v0.51
                 </span>
               </h1>
             </div>
