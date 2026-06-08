@@ -29,7 +29,7 @@ export default function Citations() {
           <div className="text-xs space-y-1">
             <span className="font-bold text-white uppercase tracking-wider block">Clinical Calibration Standard</span>
             <p className="leading-relaxed text-slate-400">
-              The algorithms deployed in <strong>CholesTrack</strong> are directly parameterized using multi-scale deterministic compartment systems biology models. Baseline thresholds correspond to typical healthy reference profiles ($LDL = 145 \text{ mg/dL}$, $HDL = 55 \text{ mg/dL}$, $TG = 150 \text{ mg/dL}$) calibrated against peer-reviewed cohort studies.
+              The algorithms deployed in <strong>CholesTrack</strong> are directly parameterized using multi-scale deterministic compartment systems biology models. Baseline thresholds correspond to typical healthy reference profiles {"($LDL = 145 \\text{ mg/dL}$, $HDL = 55 \\text{ mg/dL}$, $TG = 150 \\text{ mg/dL}$)"} calibrated against peer-reviewed cohort studies.
             </p>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function Citations() {
                 The fixed clearance velocity parameter ($k_{18}$) is parameterized to scale dynamically based on the user's logged saturated fat intake ($F_S$).
               </li>
               <li>
-                The system initializes compartments around the model's standard human baseline values ($LDL = 145 \text{ mg/dL}$, $HDL = 55 \text{ mg/dL}$).
+                The system initializes compartments around the model's standard human baseline values {"($LDL = 145 \\text{ mg/dL}$, $HDL = 55 \\text{ mg/dL}$)"}.
               </li>
             </ul>
           </div>
@@ -336,7 +336,7 @@ export default function Citations() {
                 <strong>Bile Acid Binding:</strong> Forms a gel in the intestinal lumen to bind and excrete bile acids, forcing the liver to convert endogenous cholesterol into bile, upregulating fractional clearance.
               </li>
               <li>
-                <strong>Compartmental clearance kinetics ($K_L$):</strong> Clearances are parameterized via Anderson equations ($2.2 \text{ mg/dL}$ decrease per $5\text{g}$ soluble fiber above $3\text{g}$ daily) and the dynamic clearance rate model:
+                <strong>Compartmental clearance kinetics ($K_L$):</strong> Clearances are parameterized via Anderson equations {"($2.2 \\text{ mg/dL}$ decrease per 5\\text{g} soluble fiber above 3\\text{g} daily)"} and the dynamic clearance rate model:
                 <code className="block text-indigo-300 mt-1">K_L(F_S, F_B) = [K_max * (1 + 0.015 * F_B)] / [1 + 0.05 * F_S]</code>
               </li>
             </ul>

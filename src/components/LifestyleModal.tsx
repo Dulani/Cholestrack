@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { LifestyleLog } from '../types';
 import { X, Save, RefreshCw, Activity, Salad, Pill, Scale } from 'lucide-react';
 
@@ -68,7 +68,7 @@ export default function LifestyleModal({ onClose, onSave }: LifestyleModalProps)
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
