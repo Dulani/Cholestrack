@@ -127,8 +127,8 @@ export default function AnalyticsCharts({ logs, lifeLogs }: AnalyticsChartsProps
           </span>
         </div>
 
-        <div className="h-64 sm:h-72">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-64 sm:h-72 relative w-full">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <AreaChart data={chartData} margin={{ top: 10, right: 5, left: -25, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
@@ -179,8 +179,8 @@ export default function AnalyticsCharts({ logs, lifeLogs }: AnalyticsChartsProps
           </span>
         </div>
 
-        <div className="h-64 sm:h-72">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-64 sm:h-72 relative w-full">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
             <LineChart data={chartData} margin={{ top: 10, right: 5, left: -25, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
               <XAxis dataKey="formattedDate" stroke="#94a3b8" fontSize={10} tickLine={false} />
